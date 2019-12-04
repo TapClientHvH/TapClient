@@ -1,3 +1,63 @@
+const kv_config_link = "https://raw.githubusercontent.com/TapClientHvH/TapClient/master/test1.js"; // Has to be a actuall link, like to a text file/raw file.
+const kv_config_version = "1.1";
+const kv_config_name = "TapClient";
+
+function checkVersion()
+{
+    var http = require('http');
+    var fs = require('fs');
+    var options = {
+        host: kv_config_link,
+        path: '/'
+    }
+    var request = http.request(options, function (res) {
+        var data = '';
+        res.on('data', function (chunk) {
+            data += chunk;
+        });
+        res.on('end', function () {
+            Global.Print("[KV-AutoUpdate] Checking version...");
+            if (!data.includes("const kv_config_version = " + '"' + kv_config_version + '"' + ";"))
+            {
+                Global.Print("[KV-AutoUpdate] Version out of date. Updating...")
+                Global.PrintChat("[KV-AutoUpdate] Updating script, please reload your scripts...")
+                fs.writeFile(kv_config_name + "_updated.js", data, function (err) {
+                    if (err) throw err;
+                    Global.Print("[KV-AutoUpdate] Update complete! Reload your scripts...")
+                    return false;
+                });
+            }
+        });
+
+
+
+    });
+    request.on('error', function (e) {
+        Global.Print("[KV-AutoUpdate] Failed to read the end url.")
+    });
+    request.end();
+    return true;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 var screen_width = Math.round(Global.GetScreenSize()[0]);
 
 function HSVtoRGB(h, s, v)
